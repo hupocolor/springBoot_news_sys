@@ -57,12 +57,9 @@ public class NewsUsersServiceImpl extends ServiceImpl<NewsUsersDao, NewsUsers> i
 
     @Override
     public ResponseEntity register(NewsUsers user) {
-        System.out.println(user);
-        if (Strings.isBlank(user.getUname())) return new ResponseEntity<>("用户名不能为空",HttpStatus.BAD_REQUEST);
         if (user.getUpwd().length()>16 || user.getUpwd().length()<3) return new ResponseEntity<>("密码长度错误",HttpStatus.BAD_REQUEST);
-        LambdaQueryWrapper<NewsUsers> name = new LambdaQueryWrapper<>();
-        name.eq(NewsUsers::getUname,user.getUname());
-        if(!Objects.isNull(getOne(name))) return new ResponseEntity("已存在用户",HttpStatus.BAD_REQUEST);
+        ResponseEntity response = judgeUser(user);
+        if (response!=null) return response;
         user.setRoleid(2);
         save(user);
         return new ResponseEntity("创建成功",HttpStatus.OK);
@@ -93,9 +90,8 @@ public class NewsUsersServiceImpl extends ServiceImpl<NewsUsersDao, NewsUsers> i
     public ResponseEntity updateUser(UserDto userDto, String token) {
         if (loginProperties.getRole(token)!=3) return new ResponseEntity("权限不足",HttpStatus.BAD_REQUEST);
         NewsUsers newsUsers = BeanCopyUtils.copyBean(userDto, NewsUsers.class);
-        LambdaQueryWrapper<NewsUsers> newsUsersLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        newsUsersLambdaQueryWrapper.eq(NewsUsers::getUname,userDto.getUname());
-        if (getOne(newsUsersLambdaQueryWrapper)!=null) return new ResponseEntity("名称不可重复",HttpStatus.BAD_REQUEST);
+        ResponseEntity response = judgeUser(newsUsers);
+        if (response!=null) return response;
         boolean update = updateById(newsUsers);
         if (update) return ResponseEntity.ok("操作成功");
         return new ResponseEntity("更新失败",HttpStatus.BAD_REQUEST);
@@ -122,6 +118,14 @@ public class NewsUsersServiceImpl extends ServiceImpl<NewsUsersDao, NewsUsers> i
         return new ResponseEntity("获取失败",HttpStatus.BAD_REQUEST);
     }
 
+    public ResponseEntity judgeUser(NewsUsers user){
+        String name = user.getUname();
+        if (name.length()>18 || name.length()<3) return new ResponseEntity<>("用户名格式错误",HttpStatus.BAD_REQUEST);
+        LambdaQueryWrapper<NewsUsers> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(NewsUsers::getUname,name);
+        if (getOne(wrapper) != null) return new ResponseEntity<>("用户已存在",HttpStatus.BAD_REQUEST);
+        return null;
+    }
 
 }
 

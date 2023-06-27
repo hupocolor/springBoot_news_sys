@@ -78,22 +78,28 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
     @Override
     public ResponseEntity addNews(News news, String token) {
         if (loginProperties.getRole(token) != 3) return new ResponseEntity("权限不足",HttpStatus.BAD_REQUEST);
-        LambdaQueryWrapper<News> newsLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        newsLambdaQueryWrapper.eq(News::getNtitle,news.getNtitle());
-        if (getOne(newsLambdaQueryWrapper)!=null) return new ResponseEntity("标题重复",HttpStatus.BAD_REQUEST);
-        save(news);
+        ResponseEntity response = judgeNews(news);
+        if (response!=null) return response;save(news);
         return ResponseEntity.ok("操作成功");
     }
 
     @Override
     public ResponseEntity updateNews(News news, String token) {
         if (loginProperties.getRole(token) != 3) return new ResponseEntity("权限不足",HttpStatus.BAD_REQUEST);
-        LambdaQueryWrapper<News> newsLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if (getOne(newsLambdaQueryWrapper)!=null) return new ResponseEntity("标题重复",HttpStatus.BAD_REQUEST);
+        ResponseEntity response = judgeNews(news);
+        if (response!=null) return response;
         updateById(news);
         return ResponseEntity.ok("操作成功");
     }
 
+    public ResponseEntity judgeNews(News news){
+        LambdaQueryWrapper<News> newsLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if (getOne(newsLambdaQueryWrapper)!=null) return new ResponseEntity("标题重复",HttpStatus.BAD_REQUEST);
+        if (news.getNauthor().length()<3 || news.getNauthor().length()>18) return new ResponseEntity("标题格式错误",HttpStatus.BAD_REQUEST);
+        if (news.getNcontent().length()>2000 || news.getNcontent().length()<100) return new ResponseEntity("新闻字数必须在100到2000字",HttpStatus.BAD_REQUEST);
+        if (news.getNsummary().length()<4 || news.getNsummary().length()>100) return new ResponseEntity<>("摘要在4到100字之间",HttpStatus.BAD_REQUEST);
+        return null;
+    }
 
 }
 

@@ -1,5 +1,7 @@
 package hl.hjc.newsdemo.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import hl.hjc.newsdemo.dto.NewsTitleDto;
 import hl.hjc.newsdemo.entity.News;
 import hl.hjc.newsdemo.service.NewsService;
 import org.apache.ibatis.annotations.Delete;
@@ -21,38 +23,38 @@ public class NewsController {
     }
 
     @GetMapping("/getHotNews/{topicId}")
-    public ResponseEntity getHotNews(@PathVariable("topicId") Integer topicId){
+    public ResponseEntity<NewsTitleDto> getHotNews(@PathVariable("topicId") Integer topicId){
         return newsService.getHotNews(topicId);
     }
 
     @GetMapping("/getNewsPage")
-    public ResponseEntity getNewsPage(Integer current,Integer size,Integer topicId,String keyword){
+    public ResponseEntity<Page<NewsTitleDto>> getNewsPage(Integer current, Integer size, Integer topicId, String keyword){
         return newsService.getNewsPage(current,size,topicId,keyword);
     }
 
     @GetMapping("/getByTopic")
-    public ResponseEntity getByTopic(Integer current,Integer size,Integer topicId){
+    public ResponseEntity<Page<NewsTitleDto>> getByTopic(Integer current,Integer size,Integer topicId){
         return newsService.getNewsPage(current,size,topicId,null);
     }
 
     @GetMapping("/getByKey")
-    public ResponseEntity getByKeyword(Integer current,Integer size,String keyword){
+    public ResponseEntity<Page<NewsTitleDto>> getByKeyword(Integer current,Integer size,String keyword){
         return newsService.getNewsPage(current,size,null,keyword);
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteNews(@PathVariable Integer id,@RequestHeader("token") String token){
+    public ResponseEntity<String> deleteNews(@PathVariable Integer id,@RequestHeader("token") String token){
         return newsService.delNews(id,token);
     }
 
     @PostMapping("/addNews")
-    public ResponseEntity addNews(@RequestBody News news,@RequestHeader("token") String token){
+    public ResponseEntity<String> addNews(@RequestBody News news,@RequestHeader("token") String token){
         return newsService.addNews(news,token);
     }
 
     @PostMapping("/updateNews")
-    public ResponseEntity updateNews(@RequestBody News news,@RequestHeader("token") String token){
+    public ResponseEntity<String> updateNews(@RequestBody News news,@RequestHeader("token") String token){
         return newsService.updateNews(news,token);
     }
 

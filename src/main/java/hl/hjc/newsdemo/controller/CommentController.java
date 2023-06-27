@@ -1,5 +1,6 @@
 package hl.hjc.newsdemo.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import hl.hjc.newsdemo.entity.Comments;
 import hl.hjc.newsdemo.service.CommentsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,12 @@ public class CommentController {
     @Autowired
     CommentsService commentsService;
     @GetMapping("/list")
-    public ResponseEntity getComments(Integer current, Integer size, Integer newsId){
+    public ResponseEntity<Page<Comments>> getComments(Integer current, Integer size, Integer newsId){
         return commentsService.getComments(current,size,newsId);
     }
 
     @PostMapping("/addComment")
-    public ResponseEntity addComment(@RequestBody Comments comment,@RequestHeader("token") String token){
+    public ResponseEntity<String> addComment(@RequestBody Comments comment,@RequestHeader("token") String token){
         return commentsService.addComment(comment,token);
     }
 }
