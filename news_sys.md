@@ -1,4 +1,4 @@
-# OpenAPI definition
+# 新闻系统API
 [toc]
 ## 1	环境变量
 
@@ -8,23 +8,8 @@
 |baseUrl|http://localhost:8080|
 
 
-## 2	OpenAPI definition
-
-##### 说明
-> 
-
-
-
-##### 联系方式
-- **联系人：**
-- **邮箱：**
-- **网址：**//
-
-##### 文档版本
-```
-v0
-```
-
+## 2	API definition
+邮箱: 1525864549@qq.com
 
 ## 3	updateUser
 
