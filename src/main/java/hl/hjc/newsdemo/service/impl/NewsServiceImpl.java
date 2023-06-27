@@ -78,6 +78,9 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
     @Override
     public ResponseEntity addNews(News news, String token) {
         if (loginProperties.getRole(token) != 3) return new ResponseEntity("权限不足",HttpStatus.BAD_REQUEST);
+        LambdaQueryWrapper<News> newsLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        newsLambdaQueryWrapper.eq(News::getNtitle,news.getNtitle());
+        if (getOne(newsLambdaQueryWrapper)!=null) return new ResponseEntity("标题重复",HttpStatus.BAD_REQUEST);
         save(news);
         return ResponseEntity.ok("操作成功");
     }
@@ -85,6 +88,8 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
     @Override
     public ResponseEntity updateNews(News news, String token) {
         if (loginProperties.getRole(token) != 3) return new ResponseEntity("权限不足",HttpStatus.BAD_REQUEST);
+        LambdaQueryWrapper<News> newsLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if (getOne(newsLambdaQueryWrapper)!=null) return new ResponseEntity("标题重复",HttpStatus.BAD_REQUEST);
         updateById(news);
         return ResponseEntity.ok("操作成功");
     }

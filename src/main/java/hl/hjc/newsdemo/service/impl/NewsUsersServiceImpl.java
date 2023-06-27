@@ -10,9 +10,7 @@ import hl.hjc.newsdemo.service.NewsUsersService;
 import hl.hjc.newsdemo.service.RoleService;
 import hl.hjc.newsdemo.utils.BeanCopyUtils;
 import hl.hjc.newsdemo.utils.LoginProperties;
-import io.swagger.v3.core.util.Json;
 import org.apache.logging.log4j.util.Strings;
-import org.apache.tomcat.util.json.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,6 +93,9 @@ public class NewsUsersServiceImpl extends ServiceImpl<NewsUsersDao, NewsUsers> i
     public ResponseEntity updateUser(UserDto userDto, String token) {
         if (loginProperties.getRole(token)!=3) return new ResponseEntity("权限不足",HttpStatus.BAD_REQUEST);
         NewsUsers newsUsers = BeanCopyUtils.copyBean(userDto, NewsUsers.class);
+        LambdaQueryWrapper<NewsUsers> newsUsersLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        newsUsersLambdaQueryWrapper.eq(NewsUsers::getUname,userDto.getUname());
+        if (getOne(newsUsersLambdaQueryWrapper)!=null) return new ResponseEntity("名称不可重复",HttpStatus.BAD_REQUEST);
         boolean update = updateById(newsUsers);
         if (update) return ResponseEntity.ok("操作成功");
         return new ResponseEntity("更新失败",HttpStatus.BAD_REQUEST);

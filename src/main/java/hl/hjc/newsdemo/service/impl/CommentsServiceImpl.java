@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * (Comments)表服务实现类
@@ -41,6 +39,7 @@ public class CommentsServiceImpl extends ServiceImpl<CommentsDao, Comments> impl
         if (loginProperties.getRole(token) == 2) return new ResponseEntity<>("权限不足",HttpStatus.BAD_REQUEST);
         if (!CommentUtils.judgeComment(comment)) return new ResponseEntity<>("评论格式错误",HttpStatus.BAD_REQUEST);
         comment.setCdate(Calendar.getInstance().getTime());
+        comment.setCcontent(CommentUtils.censorSensitiveWords(comment.getCcontent()));
         save(comment);
         return ResponseEntity.ok("操作成功");
     }

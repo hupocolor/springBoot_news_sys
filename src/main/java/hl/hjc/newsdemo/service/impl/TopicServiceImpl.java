@@ -45,6 +45,9 @@ public class TopicServiceImpl extends ServiceImpl<TopicDao, Topic> implements To
     @Override
     public ResponseEntity updateTopic(Topic topic, String token) {
         if (loginProperties.getRole(token) != 3) return new ResponseEntity("权限不足",HttpStatus.BAD_REQUEST);
+        LambdaQueryWrapper<Topic> topicLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        topicLambdaQueryWrapper.eq(Topic::getTname,topic.getTname());
+        if (getOne(topicLambdaQueryWrapper) != null) return new ResponseEntity("主题重复",HttpStatus.BAD_REQUEST);
         boolean update = updateById(topic);
         if (update) return ResponseEntity.ok("操作成功");
         return new ResponseEntity("操作失败",HttpStatus.BAD_REQUEST);
