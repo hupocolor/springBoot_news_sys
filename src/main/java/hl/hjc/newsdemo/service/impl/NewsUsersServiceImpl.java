@@ -104,6 +104,9 @@ public class NewsUsersServiceImpl extends ServiceImpl<NewsUsersDao, NewsUsers> i
     @Override
     public ResponseEntity delUser(Integer id, String token) {
         if (loginProperties.getRole(token)!=3) return new ResponseEntity("权限不足",HttpStatus.BAD_REQUEST);
+        NewsUsers newsUsers = loginProperties.getUser(token);
+        if (id == 1) return new ResponseEntity<>("管理员不可删除",HttpStatus.BAD_REQUEST);
+        if (newsUsers.getUid() == id) return new ResponseEntity<>("不可删除已登录角色",HttpStatus.BAD_REQUEST);
         boolean remove = removeById(id);
         if (remove) return ResponseEntity.ok("操作成功");
         return new ResponseEntity("删除失败",HttpStatus.BAD_REQUEST);

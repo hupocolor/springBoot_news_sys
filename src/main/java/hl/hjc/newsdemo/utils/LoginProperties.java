@@ -30,10 +30,8 @@ public class LoginProperties {
     }
     public Integer getRole(String token){
         String userString = properties.getProperty(token);
-        System.out.println(userString);
         if (Strings.isBlank(userString)) return 2;
         NewsUsers user = JSON.parseObject(userString, NewsUsers.class);
-        System.out.println(user);
         if (Objects.isNull(user)) return 2;
         return user.getRoleid();
     }
@@ -49,4 +47,9 @@ public class LoginProperties {
     }
 
 
+    public NewsUsers getUser(String token) {
+        String userString = properties.getProperty(token);
+        NewsUsers user = JSON.parseObject(userString, NewsUsers.class);
+        return user;
+    }
 }
