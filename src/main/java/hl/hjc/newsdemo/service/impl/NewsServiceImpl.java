@@ -94,6 +94,7 @@ public class NewsServiceImpl extends ServiceImpl<NewsDao, News> implements NewsS
 
     public ResponseEntity judgeNews(News news){
         LambdaQueryWrapper<News> newsLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        newsLambdaQueryWrapper.eq(News::getNtitle,news.getNtitle());
         if (getOne(newsLambdaQueryWrapper)!=null) return new ResponseEntity("标题重复",HttpStatus.BAD_REQUEST);
         if (news.getNauthor().length()<3 || news.getNauthor().length()>18) return new ResponseEntity("标题格式错误",HttpStatus.BAD_REQUEST);
         if (news.getNcontent().length()>2000 || news.getNcontent().length()<100) return new ResponseEntity("新闻字数必须在100到2000字",HttpStatus.BAD_REQUEST);

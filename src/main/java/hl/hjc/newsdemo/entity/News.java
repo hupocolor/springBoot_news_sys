@@ -40,7 +40,6 @@ public class News extends Model<News> {
     private Date ncreatedate;
     
     private String npicpath;
-    
     private String ncontent;
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT_UPDATE)

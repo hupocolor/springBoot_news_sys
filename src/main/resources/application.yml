@@ -9,9 +9,20 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 5MB
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 springdoc:
   swagger-ui:
     path : /swagger-ui.html
+
+oss:
+  accessKey: y_wOp-OC8ePwvsIcnG_QNbJpTuHN0Kni9pMUJhHo
+  secretKey: BLULfDCq7Z69t-VXRKAd2JbFF9JQAMxsYP2kMPW1
+  bucket: hlbg
+  keyPre: http://rw2m0x7xz.sabkt.gdipper.com/
